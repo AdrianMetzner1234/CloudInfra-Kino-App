@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: reservierungs-container
-          image: 504342896137.dkr.ecr.eu-central-1.amazonaws.com/reservierung:0.0.10
+          image: adrianmetzner/ci-kino-reservierungs-service:1.0.0
           env:
             - name: FILMPROGRAMM_SERVICE_HOSTNAME
               valueFrom:

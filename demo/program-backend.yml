@@ -1,8 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: film-program-replicaset
-  namespace: kino
+  name: film-program-deployment
   labels:
     app: program
 spec:
@@ -21,6 +20,6 @@ spec:
     spec:
       containers:
         - name: program-app
-          image: 504342896137.dkr.ecr.eu-central-1.amazonaws.com/tickets:0.0.8
+          image: adrianmetzner/ci-kino-film-programm-service:1.0.0
           ports:
             - containerPort: 50000  

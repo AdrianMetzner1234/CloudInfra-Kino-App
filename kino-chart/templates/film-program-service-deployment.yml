@@ -19,6 +19,6 @@ spec:
     spec:
       containers:
         - name: film-program-container
-          image: 504342896137.dkr.ecr.eu-central-1.amazonaws.com/program-service:0.0.10
+          image: adrianmetzner/ci-kino-film-programm-service:1.0.0
           ports:
             - containerPort: 50000

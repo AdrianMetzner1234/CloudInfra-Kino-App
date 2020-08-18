@@ -1,24 +1,23 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: ReplicaSet
 metadata:
   name: film-program-deployment
-  namespace: kino
   labels:
-    app: film-program
+    app: program
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: film-program
-  strategy:
-    type: RollingUpdate
+      app: program
   template:
     metadata:
+      name: film-program-pod
+      namespace: kino
       labels:
-        app: film-program
+        app: program
     spec:
       containers:
-        - name: film-program-container
+        - name: program-app
           image: adrianmetzner/ci-kino-film-programm-service:1.0.0
           ports:
-            - containerPort: 50000
+            - containerPort: 50000  

@@ -1,9 +1,9 @@
 #/bin/bash
 
-REGISTRY_RESERVIERUNG="504342896137.dkr.ecr.eu-central-1.amazonaws.com/reservierung"
-REGISTRY_WEBUI="504342896137.dkr.ecr.eu-central-1.amazonaws.com/ui"
-REGISTRY_PROGRAM="504342896137.dkr.ecr.eu-central-1.amazonaws.com/program-service"
-VERSION="0.0.10"
+REGISTRY_RESERVIERUNG="adrianmetzner/ci-kino-reservierungs-service"
+REGISTRY_WEBUI="adrianmetzner/ci-kino-ui"
+REGISTRY_PROGRAM="adrianmetzner/ci-kino-film-programm-service"
+VERSION="1.0.0"
 
 
 # build program

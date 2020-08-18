@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: film-program-deployment
+  labels:
+    app: program
+spec:
+  containers:
+    - name: program-app
+      image: adrianmetzner/ci-kino-film-programm-service:1.0.0
+      ports:
+        - containerPort: 50000
