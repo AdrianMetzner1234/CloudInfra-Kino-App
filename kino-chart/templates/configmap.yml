@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kino-config
+  namespace: {{ .Release.Name }}
+data:
+  film-program-service: "film-program-service.{{ .Release.Name }}"
+  reservation-service: "reservierung-service.{{ .Release.Name }}"
+    

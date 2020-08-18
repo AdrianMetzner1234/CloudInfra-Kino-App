@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: film-program-deployment
+  namespace: kino
+  labels:
+    app: film-program
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: film-program
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: film-program
+    spec:
+      containers:
+        - name: film-program-container
+          image: 504342896137.dkr.ecr.eu-central-1.amazonaws.com/program-service:0.0.10
+          ports:
+            - containerPort: 50000

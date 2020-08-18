@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: film-program-replicaset
+  namespace: kino
+  labels:
+    app: program
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: program
+  template:
+    metadata:
+      name: film-program-pod
+      namespace: kino
+      labels:
+        app: program
+    spec:
+      containers:
+        - name: program-app
+          image: 504342896137.dkr.ecr.eu-central-1.amazonaws.com/tickets:0.0.8
+          ports:
+            - containerPort: 50000  

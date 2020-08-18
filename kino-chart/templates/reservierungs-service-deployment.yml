@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reservierungs-service-deployment
+  namespace: {{ .Release.Name }}
+  labels:
+    app: reservierung
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: reservierung
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: reservierung
+    spec:
+      containers:
+        - name: reservierungs-container
+          image: 504342896137.dkr.ecr.eu-central-1.amazonaws.com/reservierung:0.0.10
+          env:
+            - name: FILMPROGRAMM_SERVICE_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: kino-config
+                  key: film-program-service
+          ports:
+            - containerPort: 45000

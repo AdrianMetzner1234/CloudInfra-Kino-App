@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+  webui:
+    container_name: webui
+    build:
+      context: .
+      dockerfile: WebUI/Dockerfile
+    ports:
+    - 8081:8081
+    environment:
+      - FILMPROGRAMM_SERVICE_HOSTNAME=filmprogramm-service
+      - RESERVIERUNGS_SERVICE_HOSTNAME=reservierungs-service
+  reservierungs-service:
+    container_name: reservierungs-service
+    build:
+      context: .
+      dockerfile: MicroReservierungsService/Dockerfile
+    ports:
+      - 45000:45000
+    environment:
+      - FILMPROGRAMM_SERVICE_HOSTNAME=filmprogramm-service
+  filmprogramm-service:
+    container_name: filmprogramm-service
+    # Achtung! Hier ist der Build nicht autonom. 'mvn install' muss vorher bei MicroFilmprogrammServiceClient ausgeführt werden
+    build: MicroFilmprogrammService
+    ports:
+    - 50000:50000
