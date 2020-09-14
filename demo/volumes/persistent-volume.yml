@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: reservierungs-service-pv
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: ~/db/
+  capacity:
+    storage: 2Gi
+  storageClassName: slow
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Delete
+

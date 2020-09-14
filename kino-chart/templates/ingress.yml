@@ -6,12 +6,12 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
-    external-dns.alpha.kubernetes.io/hostname: {{ .Release.Name }}.sandbox.aws.wps.de
   labels:
     app: kino
 spec:
   rules:
-    - http:
+    - host: kino.{{ .Release.Name }}.sandbox.aws.wps.de
+      http:
         paths:
           - path: /*
             backend:

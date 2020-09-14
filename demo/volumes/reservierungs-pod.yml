@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: reservierungspod
+  namespace: default
+spec:
+  containers:
+    - name: reservierungs-container
+      image: adrianmetzner/ci-kino-reservierungs-service:1.0.0
+      env:
+        - name: FILMPROGRAMM_SERVICE_HOSTNAME
+          value: localhost
+      ports:
+        - containerPort: 45000
+      volumeMounts:
+        - mountPath: reservierungs-db
+          name: h2-store
+  volumes:
+    - name: h2-store
+      persistentVolumeClaim:
+        claimName: reservierungs-service-pv-claim
