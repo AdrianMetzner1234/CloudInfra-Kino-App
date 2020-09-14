@@ -9,14 +9,20 @@ import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import de.wps.dot.reservierung.dto.DtoConverter;
+import de.wps.dot.reservierung.dto.SitzplatzbelegungDto;
 
 public class ReservierungsClientProxy {
-	private static Gson gson = new Gson();
+	private static final Gson gson = new Gson();
 
-	private URI serviceUri;
+	private final URI serviceUri;
 
 	public ReservierungsClientProxy() {
-		String reservierungHostname = System.getenv("RESERVIERUNGS_SERVICE_HOSTNAME");
+		String reservierungHostname = System.getenv("RESERVIERUNGSSERVICE_HOSTNAME") != null
+				? System.getenv("RESERVIERUNGSSERVICE_HOSTNAME")
+				: System.getProperty("reservierungsservice.hostname") != null
+					? System.getProperty("reservierungsservice.hostname")
+					: "localhost:45000";
 		serviceUri = URI.create("http://"+ reservierungHostname);
 	}
 
@@ -25,24 +31,34 @@ public class ReservierungsClientProxy {
 		// wirft ggf. NamingException
 		URI uri = URI.create(serviceUri.toString() + "/säle");
 
-		List<Saal> säle = null;
+		List<Saal> säle;
 
 		HttpResponse<String> response = Unirest.get(uri.toString()).asString();
-		Type saalListType = new TypeToken<List<Saal>>() {
-		}.getType();
+		Type saalListType = new TypeToken<List<Saal>>() {}.getType();
 		säle = gson.fromJson(response.getBody(), saalListType);
 
 		return säle;
 	}
 
-	public Sitzplatzbelegung gibSitzplatzbelegung(String vorführungsid) throws UnirestException {
+	public Saal getSaal(String saalId) throws UnirestException {
+		// wirft ggf. NamingException
+		URI uri = URI.create(serviceUri.toString() + "/säle/" + saalId);
+
+		HttpResponse<String> response = Unirest.get(uri.toString()).asString();
+		Type saalType = new TypeToken<Saal>() {}.getType();
+		Saal saal = gson.fromJson(response.getBody(), saalType);
+
+		return saal;
+	}
+
+	public Sitzplatzbelegung getSitzplatzbelegung(String vorführungsid) throws UnirestException {
 		URI uri = URI.create(serviceUri.toString() + "/sitzplatzbelegung/" + vorführungsid);
 
 		HttpResponse<String> response = Unirest.get(uri.toString()).asString();
 		System.out.println("Reservierung-Service: " + response.getStatus());
 		System.out.println("Reservierung-Service-Body: " + response.getBody());
-		Sitzplatzbelegung sitzplatzbelegung = gson.fromJson(response.getBody(), Sitzplatzbelegung.class);
-
+		SitzplatzbelegungDto sitzplatzbelegungDto = gson.fromJson(response.getBody(), SitzplatzbelegungDto.class);
+		Sitzplatzbelegung sitzplatzbelegung = DtoConverter.vonDto(sitzplatzbelegungDto);
 		return sitzplatzbelegung;
 	}
 

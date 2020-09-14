@@ -60,7 +60,7 @@ public class Controller {
 
 		try {
 			// TODO: Internal Server Error abbilden?
-			model.put("sitzplatzbelegung", reservierungsClientProxy.gibSitzplatzbelegung(vorführungsid));
+			model.put("sitzplatzbelegung", reservierungsClientProxy.getSitzplatzbelegung(vorführungsid));
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			throw new NotFoundException();

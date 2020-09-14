@@ -7,15 +7,9 @@ import java.util.List;
 public class Reservierung {
 
 	// Factory vergibt eindeutige Reservierungsnummer
-	private static int letzteReservierungsnummer = 0;
-
-	public static Reservierung erzeugeReservierung(String vorführungskennung, List<Sitznummer> sitznummern) {
-		return new Reservierung(vorführungskennung, sitznummern, ++letzteReservierungsnummer);
-	}
-
-	private List<Sitznummer> sitznummern;
-	private String vorführungkennung;
-	private int reservierungsnummer;
+	private final List<Sitznummer> sitznummern;
+	private final String vorführungkennung;
+	private final int reservierungsnummer;
 
 	public Reservierung(String vorführungskennung, List<Sitznummer> sitznummern, int reservierungsnummer) {
 		this.vorführungkennung = vorführungskennung;

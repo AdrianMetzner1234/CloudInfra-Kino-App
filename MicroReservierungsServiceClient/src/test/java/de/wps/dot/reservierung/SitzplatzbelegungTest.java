@@ -10,10 +10,6 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.wps.dot.reservierung.Saal;
-import de.wps.dot.reservierung.Sitznummer;
-import de.wps.dot.reservierung.Sitzplatzbelegung;
-
 public class SitzplatzbelegungTest {
 
 	private Sitzplatzbelegung sitzplatzbelegungImTest;
@@ -27,7 +23,7 @@ public class SitzplatzbelegungTest {
 	public void gibFreieSitze_leer() {
 
 		// Act
-		Set<Sitznummer> freieSitze = sitzplatzbelegungImTest.gibFreieSitze();
+		Set<Sitznummer> freieSitze = sitzplatzbelegungImTest.getFreieSitze();
 
 		// Assert
 		assertThat(freieSitze.size(), is(equalTo(6)));
@@ -36,7 +32,7 @@ public class SitzplatzbelegungTest {
 	
 	@Test
 	public void gibVorführungsId_istV1(){
-		assertThat(sitzplatzbelegungImTest.gibVorführungsId(), is(equalTo("v1")));
+		assertThat(sitzplatzbelegungImTest.getVorführungsId(), is(equalTo("v1")));
 	}
 
 	@Test
@@ -48,7 +44,7 @@ public class SitzplatzbelegungTest {
 		boolean result = sitzplatzbelegungImTest.bucheSitze(sitze);
 
 		// Assert
-		assertThat(sitzplatzbelegungImTest.gibFreieSitze(), containsInAnyOrder(Sitznummer.von("A", 2), Sitznummer.von("B", 1), Sitznummer.von("B", 2), Sitznummer.von("C", 1), Sitznummer.von("C" ,2)));
+		assertThat(sitzplatzbelegungImTest.getFreieSitze(), containsInAnyOrder(Sitznummer.von("A", 2), Sitznummer.von("B", 1), Sitznummer.von("B", 2), Sitznummer.von("C", 1), Sitznummer.von("C" ,2)));
 		assertThat(result, is(true));
 	}
 
@@ -61,7 +57,7 @@ public class SitzplatzbelegungTest {
 		boolean result = sitzplatzbelegungImTest.bucheSitze(sitze);
 
 		// Assert
-		assertThat(sitzplatzbelegungImTest.gibFreieSitze(), containsInAnyOrder(Sitznummer.von("A", 2), Sitznummer.von("B", 2), Sitznummer.von("C", 1), Sitznummer.von("C", 2)));
+		assertThat(sitzplatzbelegungImTest.getFreieSitze(), containsInAnyOrder(Sitznummer.von("A", 2), Sitznummer.von("B", 2), Sitznummer.von("C", 1), Sitznummer.von("C", 2)));
 		assertThat(result, is(true));
 	}
 
@@ -75,7 +71,7 @@ public class SitzplatzbelegungTest {
 		boolean result = sitzplatzbelegungImTest.bucheSitze(Arrays.asList(Sitznummer.von("A", 1), Sitznummer.von("C", 1)));
 
 		// Assert
-		assertThat(sitzplatzbelegungImTest.gibFreieSitze(), containsInAnyOrder(Sitznummer.von("A", 2), Sitznummer.von("B", 2), Sitznummer.von("C", 1), Sitznummer.von("C", 2)));
+		assertThat(sitzplatzbelegungImTest.getFreieSitze(), containsInAnyOrder(Sitznummer.von("A", 2), Sitznummer.von("B", 2), Sitznummer.von("C", 1), Sitznummer.von("C", 2)));
 		assertThat(result, is(false));
 	}
 

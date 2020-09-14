@@ -1,2 +1,1 @@
-# kino-demo-app
-
+# Service-Discovery-Workshop_DevOpsCon_2016

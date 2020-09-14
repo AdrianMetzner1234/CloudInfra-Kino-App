@@ -17,8 +17,9 @@ RUN mvn -f WebUI/pom.xml package
 
 # eigentliches Image
 FROM openjdk:8-jre
-ENTRYPOINT ["java","-jar","WebUI-0.0.1-SNAPSHOT.jar"]
-EXPOSE 8081
 
 WORKDIR /app
 COPY --from=builder /WebUI/target/*.jar ./
+
+EXPOSE 8081
+ENTRYPOINT ["java","-jar","WebUI-0.0.1-SNAPSHOT.jar"]

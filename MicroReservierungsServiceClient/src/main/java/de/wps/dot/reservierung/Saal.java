@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Saal {
+
 	private final Sitznummer[][] saalLayout;
-	private String name;
-	private String id;
+	private final String name;
+	private final String id;
 
 	public Saal(String name, int reihenBreite, int reihen) {
 		super();
@@ -19,11 +20,11 @@ public class Saal {
 		return name;
 	}
 
-	public int gibReihenBreite() {
+	public int getReihenBreite() {
 		return saalLayout[0].length;
 	}
 
-	public int gibReihen() {
+	public int getReihen() {
 		return saalLayout.length;
 	}
 
@@ -31,15 +32,17 @@ public class Saal {
 		return id;
 	}
 
-	public Sitznummer[][] gibLayout() {
+	public Sitznummer[][] getLayout() {
 		return saalLayout;
 	}
 	
-	public List<Sitznummer> gibSitze() {
-		List<Sitznummer> result = new ArrayList<Sitznummer>();
-		for(int i = 0; i < saalLayout.length; i++) {
-			for(int j = 0; j < saalLayout[i].length; j++) {
-				result.add(saalLayout[i][j]);
+	public List<Sitznummer> getSitze() {
+		List<Sitznummer> result = new ArrayList<>();
+		for (Sitznummer[] sitznummern : saalLayout) {
+			//noinspection ManualArrayToCollectionCopy
+			for (Sitznummer sitznummer : sitznummern) {
+				//noinspection UseBulkOperation
+				result.add(sitznummer);
 			}
 		}
 			

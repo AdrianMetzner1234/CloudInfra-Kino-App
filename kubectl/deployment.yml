@@ -1,0 +1,127 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kino
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-deployment
+  namespace: kino
+  labels:
+    app: ui
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ui
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: ui
+    spec:
+      containers:
+        - name: ui-container
+          image: 504342896137.dkr.ecr.eu-central-1.amazonaws.com/ui:0.0.9
+          ports:
+          - containerPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ticket-service-deployment
+  namespace: kino
+  labels:
+    app: tickets
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tickets
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: tickets
+    spec:
+      containers:
+        - name: ticket-container
+          image: 504342896137.dkr.ecr.eu-central-1.amazonaws.com/tickets:0.0.6
+          ports:
+          - containerPort: 50000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kino-ticket-service
+  namespace: kino
+  labels:
+    app: tickets
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 50000
+      protocol: TCP
+  selector:
+    app: tickets
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reservierungs-service-deployment
+  namespace: kino
+  labels:
+    app: reservierung
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: reservierung
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: reservierung
+    spec:
+      containers:
+        - name: reservierungs-container
+          image: 504342896137.dkr.ecr.eu-central-1.amazonaws.com/reservierung:0.0.9
+          ports:
+          - containerPort: 45000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reservierung-service
+  namespace: kino
+  labels:
+    app: tickets
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 45000
+      protocol: TCP
+  selector:
+    app: reservierung
+---
+apiVersion: v1
+kind: Service 
+metadata:
+  name: kino-service
+  namespace: kino
+  labels:
+    app: ui
+spec:
+  ports:
+  - port: 80
+    targetPort: 8081
+    protocol: TCP
+  selector:
+    app: ui

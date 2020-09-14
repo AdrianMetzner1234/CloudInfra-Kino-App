@@ -35,15 +35,15 @@
 
 		<form id="bookingForm" th:action="'/buchung/' + ${vorfuehrungsid}" method="post" accept-charset="UTF-8">		
 			<ul class="list-group" style="float: left;">
-				<th:block th:each="row, rowStat : ${sitzplatzbelegung.gibSaal().gibLayout()}">
+				<th:block th:each="row, rowStat : ${sitzplatzbelegung.getSaal().getLayout()}">
 					<li class="list-group-item">
 						<span class="label label-default">Reihe <span th:text="${rowStat.count}">Default</span></span>
 						<div class="btn-group" role="group">
-							<th:block th:each="seat, seatStat : ${sitzplatzbelegung.gibSaal().gibLayout()[rowStat.index]}">
-								<th:block th:if="${sitzplatzbelegung.sitzIstFrei(seat)}">
-									<input type="checkbox" th:id="sitze" th:name="sitze" th:value="${seat.gibName()}" />
+							<th:block th:each="seat, seatStat : ${sitzplatzbelegung.getSaal().getLayout()[rowStat.index]}">
+								<th:block th:if="${sitzplatzbelegung.isSitzFrei(seat)}">
+									<input type="checkbox" th:id="sitze" th:name="sitze" th:value="${seat.getName()}" />
 								</th:block>
-								<th:block th:unless="${sitzplatzbelegung.sitzIstFrei(seat)}">
+								<th:block th:unless="${sitzplatzbelegung.isSitzFrei(seat)}">
 									<input type="checkbox" disabled="disabled" />
 								</th:block>
 							</th:block>

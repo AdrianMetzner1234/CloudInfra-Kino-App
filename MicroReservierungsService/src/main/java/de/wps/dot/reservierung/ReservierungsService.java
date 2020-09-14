@@ -1,30 +1,37 @@
 package de.wps.dot.reservierung;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import de.wps.dot.filmprogramm.Vorführung;
+import de.wps.dot.reservierung.entität.Reservierung;
+import de.wps.dot.reservierung.entität.Sitznummer;
+import de.wps.dot.reservierung.entität.Sitzplatzbelegung;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ReservierungsService {
-	private List<Saal> säle;
-	private Map<String, Sitzplatzbelegung> saalpläne;
-	private final List<Reservierung> reservierungen;
+	private final List<Saal> säle;
+	private final ReservierungsRepository reservierungsRepository;
+	private final SaalplanRepository saalplanRepository;
 
-	public ReservierungsService(List<Saal> säle, List<Vorführung> vorführungen) {
+	@Autowired
+	public ReservierungsService(List<Saal> säle,
+								List<Vorführung> vorführungen,
+								ReservierungsRepository reservierungsRepository,
+								SaalplanRepository saalplanRepository) {
 		this.säle = säle;
-		reservierungen = new ArrayList<Reservierung>();
-		saalpläne = new HashMap<>(säle.size());
+		this.reservierungsRepository = reservierungsRepository;
+		this.saalplanRepository = saalplanRepository;
 
 		for (Vorführung vorführung : vorführungen) {
 			Optional<Saal> optionalSaal = findeSaal(säle, vorführung.getSaalId());
-			if (!optionalSaal.isPresent())
+			if (optionalSaal.isEmpty())
 				continue;
 			Saal saal = optionalSaal.get();
-			saalpläne.put(vorführung.getId(), new Sitzplatzbelegung(saal, vorführung.getId()));
+			saalplanRepository.save(new Sitzplatzbelegung(vorführung.getId()+"--"+saal.getId(), saal, vorführung.getId()));
 		}
 	}
 
@@ -32,37 +39,38 @@ public class ReservierungsService {
 		return säle.stream().filter(saal -> saal.getId().equals(saalId)).findFirst();
 	}
 
-	public Set<Sitznummer> gibFreieSitze(String vorstellungsid) {
-		assert istVorstellungBekannt(vorstellungsid);
+	public Set<Sitznummer> getFreieSitze(String vorstellungsid) {
+		assert isVorstellungBekannt(vorstellungsid);
 
-		Sitzplatzbelegung sitzplatzbelegung = saalpläne.get(vorstellungsid);
+		Sitzplatzbelegung sitzplatzbelegung = saalplanRepository.findByVorführungsId(vorstellungsid);
 
-		return sitzplatzbelegung.gibFreieSitze();
+		return sitzplatzbelegung.getFreieSitze();
 	}
 
-	public Sitzplatzbelegung gibSitzplatzbelegung(String vorstellungsid) {
-		assert istVorstellungBekannt(vorstellungsid);
+	public Sitzplatzbelegung getSitzplatzbelegung(String vorstellungsid) {
+		assert isVorstellungBekannt(vorstellungsid);
 
-		return saalpläne.get(vorstellungsid);
+		return saalplanRepository.findByVorführungsId(vorstellungsid);
 	}
 
-	public boolean istVorstellungBekannt(String vorstellungsid) {
-		return saalpläne.containsKey(vorstellungsid);
+	public boolean isVorstellungBekannt(String vorstellungsid) {
+		return (saalplanRepository.findByVorführungsId(vorstellungsid) != null);
 	}
 
 	public Reservierung bucheSitze(String vorstellungsid, List<Sitznummer> requestedSeats) {
-		assert istVorstellungBekannt(vorstellungsid);
+		assert isVorstellungBekannt(vorstellungsid);
 
-		Sitzplatzbelegung sitzplatzbelegung = saalpläne.get(vorstellungsid);
+		Sitzplatzbelegung sitzplatzbelegung = saalplanRepository.findByVorführungsId(vorstellungsid);
 		if (sitzplatzbelegung.bucheSitze(requestedSeats)) {
-			Reservierung reservierung = Reservierung.erzeugeReservierung(vorstellungsid, requestedSeats);
-			reservierungen.add(reservierung);
-			return reservierung ;
+			int maximaleReservierungsnummer = reservierungsRepository.findeMaximaleReservierungsnummer();
+			Reservierung reservierung = Reservierung.erzeugeReservierung(vorstellungsid, requestedSeats, ++maximaleReservierungsnummer);
+			reservierungsRepository.save(reservierung);
+			return reservierung;
 		}
 		return null;
 	}
 
-	public List<Saal> gibSäle() {
+	public List<Saal> getSäle() {
 		return säle;
 	}
 }

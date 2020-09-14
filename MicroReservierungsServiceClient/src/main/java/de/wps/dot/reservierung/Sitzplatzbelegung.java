@@ -11,34 +11,39 @@ public class Sitzplatzbelegung {
 	private String vorführungsId;
 	private final Saal saal;
 	private final Map<Sitznummer, Boolean> sitzVerbucht;
+
+	public Sitzplatzbelegung(Saal saal, String vorführungsId, Map<Sitznummer, Boolean> sitzVerbucht) {
+		this.saal = saal;
+		this.vorführungsId = vorführungsId;
+		this.sitzVerbucht = sitzVerbucht;
+	}
 	
 	public Sitzplatzbelegung(Saal saal, String vorführungsId) {
 		this.saal = saal;
 		this.vorführungsId = vorführungsId;
-		sitzVerbucht = new HashMap<Sitznummer, Boolean>();		
+		sitzVerbucht = new HashMap<>();
 
-		saal.gibSitze().stream().forEach(sitz -> sitzVerbucht.put(sitz, false));
+		saal.getSitze().forEach(sitz -> sitzVerbucht.put(sitz, false));
 	}
 	
-	public Saal gibSaal() {
+	public Saal getSaal() {
 		return saal;
 	}
 
-	public String gibVorführungsId() {
+	public String getVorführungsId() {
 		return vorführungsId;
 	}
 
-	public void setzeVorführungsId(String vorführungsId) {
+	public void setVorführungsId(String vorführungsId) {
 		this.vorführungsId = vorführungsId;
 	}
 
-	public boolean sitzIstFrei(Sitznummer sitznummer) {
-		
+	public boolean isSitzFrei(Sitznummer sitznummer) {
 		return !sitzVerbucht.get(sitznummer);
 	}
 	
-	public Set<Sitznummer> gibFreieSitze() {
-		Set<Sitznummer> result = new HashSet<Sitznummer>();
+	public Set<Sitznummer> getFreieSitze() {
+		Set<Sitznummer> result = new HashSet<>();
 		for(Sitznummer sitz : sitzVerbucht.keySet()) {
 			if(!sitzVerbucht.get(sitz)) {
 				result.add(sitz);
@@ -48,8 +53,8 @@ public class Sitzplatzbelegung {
 	}
 
 	public synchronized boolean bucheSitze(List<Sitznummer> sitze) {
-		if (gibFreieSitze().containsAll(sitze)) {
-			sitze.stream().forEach(sitz -> sitzVerbucht.replace(sitz, true));
+		if (getFreieSitze().containsAll(sitze)) {
+			sitze.forEach(sitz -> sitzVerbucht.replace(sitz, true));
 			return true;
 		}
 

@@ -1,6 +1,5 @@
 package de.wps.dot.reservierung;
 
-import static org.valid4j.Assertive.require;
 
 public class Sitznummer {
 	private final int sitzreihe;
@@ -14,10 +13,6 @@ public class Sitznummer {
 	public static Sitznummer von(int sitzreihe, int stuhlnummer) {
 		return new Sitznummer(sitzreihe, stuhlnummer);
 	}
-	
-	public int gibSitzReihe() {
-		return sitzreihe;
-	}
 
 	public static Sitznummer von(String sitzreihe, int stuhlnummer) {
 		char c = sitzreihe.charAt(0);
@@ -26,25 +21,33 @@ public class Sitznummer {
 	}
 
 	public static Sitznummer von(String sitznummer) {
-		require(isValid(sitznummer));
-		
-		return von(sitznummer.substring(0,1), Integer.parseInt(sitznummer.substring(1,1)));
+		assert isValide(sitznummer);
+
+		return von(sitznummer.substring(0,1), Integer.parseInt(sitznummer.substring(1)));
 	}
 
-	public String gibName() {
+	public int getSitzReihe() {
+		return sitzreihe;
+	}
+
+	public int getStuhlnummer() {
+		return this.stuhlnummer;
+	}
+
+	public String getName() {
 		String result = "" + (char)('A' + sitzreihe) + (stuhlnummer);
 
 		return result;
 	}
 
-	public static boolean isValid(String sitznummer){
+	public static boolean isValide(String sitznummer){
 		if(sitznummer.substring(0,1).charAt(0) < 'A' || sitznummer.substring(0,1).charAt(0) > 'Z')
 		{
 			return false;
 		}
 		
 		try {
-			Integer.parseInt(sitznummer.substring(1, sitznummer.length()));
+			Integer.parseInt(sitznummer.substring(1));
 		} catch (Exception e) {
 			return false;
 		}

@@ -17,7 +17,11 @@ public class FilmprogrammClientProxy {
 	private final String filmprogrammHostname;
 
 	public FilmprogrammClientProxy() {
-		filmprogrammHostname = System.getenv("FILMPROGRAMM_SERVICE_HOSTNAME");
+		filmprogrammHostname = System.getenv("FILMPROGRAMM_HOSTNAME") != null
+				? System.getenv("FILMPROGRAMM_HOSTNAME")
+				: System.getProperty("filmprogramm.hostname") != null
+				? System.getProperty("filmprogramm.hostname")
+				: "localhost:50000";
 	}
 
 	public List<Vorführung> getVorführungen() throws UnirestException, NamingException {

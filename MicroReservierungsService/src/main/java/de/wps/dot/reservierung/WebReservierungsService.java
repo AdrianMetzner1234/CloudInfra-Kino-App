@@ -1,128 +1,101 @@
 package de.wps.dot.reservierung;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.jetty.http.HttpStatus;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import de.wps.dot.reservierung.ausnahme.NichtGefundenAusnahme;
+import de.wps.dot.reservierung.dto.DtoConverter;
+import de.wps.dot.reservierung.dto.SaalDto;
+import de.wps.dot.reservierung.dto.SitzplatzbelegungDto;
+import de.wps.dot.reservierung.entität.Reservierung;
+import de.wps.dot.reservierung.entität.Sitznummer;
+import de.wps.dot.reservierung.entität.Sitzplatzbelegung;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import de.wps.dot.filmprogramm.Vorführung;
-import spark.Request;
-import spark.Response;
-import spark.Spark;
-import spark.SparkBase;
-
+@RestController
 public class WebReservierungsService {
-	private static Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().create();
-	private ReservierungsService reservierungsService;
+    private final ReservierungsService reservierungsService;
 
-	public WebReservierungsService(List<Saal> säle, List<Vorführung> vorführungen) {
-		reservierungsService = new ReservierungsService(säle, vorführungen);
-		// Sampledaten für gebuchte Sitze: reservierungsService.bucheSitze(vorführungen.get(0).getId(), Arrays.asList("A1", "A2"));
-	}
+    public WebReservierungsService(ReservierungsService reservierungsService) {
+        this.reservierungsService = reservierungsService;
+    }
 
-	public void start(int port) {
-		SparkBase.port(port);
-
-		Spark.get("/säle", this::säle, gson::toJson);
-		Spark.get("/sitzplatzbelegung/:vorstellungsid", this::sitzplatzbelegung, gson::toJson);
-		Spark.get("/free_seats/:vorstellungsid", this::freeSeats, gson::toJson);
-		Spark.post("/booking/:vorstellungsid", this::bookSeats, gson::toJson);
-
-		Spark.exception(NotFoundException.class, (e, request, response) -> {
-			response.status(HttpStatus.NOT_FOUND_404);
-			response.body("Resource not found");
-		});
-
-		Spark.awaitInitialization();
-	}
-
-	public void stop() {
-		Spark.stop();
-	}
-
-	public Object freeSeats(Request req, Response res) {
-		final String vorstellungsid = req.params(":vorstellungsid");
-		if (!reservierungsService.istVorstellungBekannt(vorstellungsid))
-			throw new NotFoundException();
-
-		return reservierungsService.gibFreieSitze(vorstellungsid);
-	}
-	
-	
-
-	public Object bookSeats(Request req, Response res) throws IOException {
-		String vorstellungsid = req.params(":vorstellungsid");
-
-		List<Sitznummer> requestedSeats = bookingToStringList(req);
-		if (!reservierungsService.istVorstellungBekannt(vorstellungsid))
-			throw new NotFoundException();
-
-		
-		Reservierung reservierung = reservierungsService.bucheSitze(vorstellungsid, requestedSeats);
-		if (reservierung == null) {
-			res.status(HttpStatus.CONFLICT_409);
-			return "";
-		}
-		
-		res.status(HttpStatus.CREATED_201);
-		return reservierung;
-	}
-	
-    private List<Sitznummer> bookingToStringList(Request request) throws IOException {
-    	List<String> requestedSeats = null;
-        switch (request.contentType()) {
-            case "application/json":
-            	requestedSeats = Arrays.asList(gson.fromJson(request.body(), String[].class));
-                break;
-            case "application/x-www-form-urlencoded":
-            	requestedSeats = Arrays.asList(gson.fromJson(dirtyPrepareRequest(request.body(), "sitze="), String[].class));;
-                break;
-            default:
-                Spark.halt(400, "Unsupported request content-type [" + request.contentType() + "]");
+    @GetMapping(value = "free_seats")
+    public Object freeSeats(@RequestParam String vorstellungsId) {
+        if (!reservierungsService.isVorstellungBekannt(vorstellungsId)) {
+            throw new NichtGefundenAusnahme();
         }
-        
-        List<Sitznummer> result = new ArrayList<Sitznummer>();
-        for(String seat : requestedSeats)
-        {
-        	//TODO: macht die Annahme das es nur einstellige Reihhenbezeichnungen gibt.
-        	result.add(Sitznummer.von(seat.substring(0,1), Integer.parseInt(seat.substring(1,seat.length()))));
-        }
-        
-        return result;
-    }
-    
-    private String dirtyPrepareRequest(String requestBody, String variable)
-    {
-    	String result = "[";
-    	
-    	String[] strings = requestBody.split("&");
-    	
-    	for(String s : strings)
-    	{
-    		if(s.startsWith(variable))
-    		{
-    			result += s.substring(variable.length());
-    			result += ", ";
-    		}
-    	}
-    	
-    	result += "]";
-    	result = result.replace(", ]", "]");
-    	return result;
-    }
-    
-    public Object sitzplatzbelegung(Request req, Response res) {
-    	String vorstellungsid = req.params(":vorstellungsid");
-    	
-    	return reservierungsService.gibSitzplatzbelegung(vorstellungsid);
+
+        return reservierungsService.getFreieSitze(vorstellungsId);
     }
 
-	public Object säle(Request req, Response res) {
-		return reservierungsService.gibSäle();
-	}
+    @PostMapping(value = "/booking/{vorstellungsId}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Reservierung> bookSeats(@PathVariable("vorstellungsId") String vorstellungsId,
+                                                  @RequestBody MultiValueMap<String, String> body) {
+        List<Sitznummer> result = new ArrayList<>();
+        for (String seat : body.get("sitze")) {
+            //TODO: macht die Annahme das es nur einstellige Reihenbezeichnungen gibt.
+            result.add(Sitznummer.von(seat.substring(0, 1), Integer.parseInt(seat.substring(1))));
+        }
+
+        return bookSeatsInternal(vorstellungsId, result);
+    }
+
+    @PostMapping(value = "/booking/{vorstellungsId}", consumes = "application/json")
+    public ResponseEntity<Reservierung> bookSeats(@PathVariable("vorstellungsId") String vorstellungsId,
+                                                  @RequestBody String[] body) {
+        List<Sitznummer> requestedSeats = new ArrayList<>();
+        for (String seat : body) {
+            //TODO: macht die Annahme das es nur einstellige Reihenbezeichnungen gibt.
+            requestedSeats.add(Sitznummer.von(seat.substring(0, 1), Integer.parseInt(seat.substring(1))));
+        }
+        return bookSeatsInternal(vorstellungsId, requestedSeats);
+    }
+
+    @GetMapping(value = "/säle")
+    public List<Saal> säle() {
+        return reservierungsService.getSäle();
+    }
+
+    @GetMapping(value = "/säle/")
+    public Saal saalMitId(@RequestParam String saalId) {
+        return reservierungsService.getSäle().stream()
+                .filter(it -> it.getId().equals(saalId))
+                .findAny()
+                .orElseThrow(NichtGefundenAusnahme::new);
+    }
+
+    @GetMapping(value = "/sitzplatzbelegung/{vorstellungsId}")
+    public ResponseEntity<SitzplatzbelegungDto> sitzplatzbelegung(@PathVariable("vorstellungsId") String vorstellungsId) throws JsonProcessingException {
+        Sitzplatzbelegung platzbelegung = reservierungsService.getSitzplatzbelegung(vorstellungsId);
+        SaalDto saal = DtoConverter.saalToSaalDto(saalMitId(platzbelegung.getSaalId()));
+        SitzplatzbelegungDto result = new SitzplatzbelegungDto(saal, vorstellungsId, reservierungsService.getSitzplatzbelegung(vorstellungsId).getSitzVerbuchung());
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    private ResponseEntity<Reservierung> bookSeatsInternal(String vorstellungsId, List<Sitznummer> requestedSeats) {
+        if (!reservierungsService.isVorstellungBekannt(vorstellungsId)) {
+            throw new NichtGefundenAusnahme();
+        }
+
+
+        Reservierung reservierung = reservierungsService.bucheSitze(vorstellungsId, requestedSeats);
+        if (reservierung == null) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
+        return new ResponseEntity<>(reservierung, HttpStatus.CREATED);
+    }
+
+
 }

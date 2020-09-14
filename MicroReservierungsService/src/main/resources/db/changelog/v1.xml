@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <changeSet author="johannes (generated)" id="1599430555783-1">
+        <createTable tableName="RESERVIERUNG">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="CONSTRAINT_4" />
+            </column>
+            <column name="RESERVIERUNGSNUMMER" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="VORFÜHRUNGKENNUNG" type="VARCHAR(255)" />
+        </createTable>
+    </changeSet>
+    <changeSet author="johannes (generated)" id="1599430555783-2">
+        <createTable tableName="SITZNUMMERN">
+            <column name="RESERVIERUNG_ID" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="SITZREIHE" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="STUHLNUMMER" type="INT">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="johannes (generated)" id="1599430555783-3">
+        <createTable tableName="SITZPLATZBELEGUNG">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="CONSTRAINT_D" />
+            </column>
+            <column name="SAAL_ID" type="VARCHAR(255)" />
+            <column name="VORFÜHRUNGS_ID" type="VARCHAR(255)" />
+        </createTable>
+    </changeSet>
+    <changeSet author="johannes (generated)" id="1599430555783-4">
+        <createTable tableName="SITZPLATZBELEGUNG_SITZ_VERBUCHT">
+            <column name="SITZPLATZBELEGUNG_ID" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="CONSTRAINT_7" />
+            </column>
+            <column name="SITZ_VERBUCHT" type="BOOLEAN" />
+            <column name="SITZREIHE" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="CONSTRAINT_7" />
+            </column>
+            <column name="STUHLNUMMER" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="CONSTRAINT_7" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="johannes (generated)" id="1599430555783-5">
+        <createIndex indexName="FK9P6ODL29NERNYM2AYR7C0F51Y_INDEX_7" tableName="SITZPLATZBELEGUNG_SITZ_VERBUCHT">
+            <column name="SITZPLATZBELEGUNG_ID" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="johannes (generated)" id="1599430555783-6">
+        <createIndex indexName="FKBKKHWS8U3GD874KKYFNB9CFTS_INDEX_C" tableName="SITZNUMMERN">
+            <column name="RESERVIERUNG_ID" />
+        </createIndex>
+    </changeSet>
+    <changeSet author="johannes (generated)" id="1599430555783-7">
+        <addForeignKeyConstraint baseColumnNames="SITZPLATZBELEGUNG_ID" baseTableName="SITZPLATZBELEGUNG_SITZ_VERBUCHT"
+                                 constraintName="FK9P6ODL29NERNYM2AYR7C0F51Y" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="SITZPLATZBELEGUNG" validate="true" />
+    </changeSet>
+    <changeSet author="johannes (generated)" id="1599430555783-8">
+        <addForeignKeyConstraint baseColumnNames="RESERVIERUNG_ID" baseTableName="SITZNUMMERN"
+                                 constraintName="FKBKKHWS8U3GD874KKYFNB9CFTS" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="RESERVIERUNG" validate="true" />
+    </changeSet>
+    <changeSet id="1599430555783-9" author="johannes">
+        <createSequence cycle="false" incrementBy="1"
+                        sequenceName="hibernate_sequence" startValue="0" />
+    </changeSet>
+    <changeSet id="1599430555783-10" author="johannes">
+        <modifyDataType columnName="ID" newDataType="int" tableName="RESERVIERUNG" />
+    </changeSet>
+</databaseChangeLog>
