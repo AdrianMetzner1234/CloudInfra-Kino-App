@@ -1,12 +1,13 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name:
-  namespace:
+  name: {{ .Values.elasticsearch.volume.name }}
+  namespace: {{ .Values.namespace }}
 spec:
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
+  storageClassName: ebs-sc
   resources:
     requests:
-      storage: 16Gi
+      storage: {{ .Values.elasticsearch.volume.size }}

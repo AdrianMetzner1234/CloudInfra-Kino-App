@@ -5,6 +5,9 @@ elasticsearch:
   service:
     name: elastic-search
     port: 80
+  volume:
+    name: elastic-pv
+    size: 4Gi
 
 kibana:
   version: 7.9.1
