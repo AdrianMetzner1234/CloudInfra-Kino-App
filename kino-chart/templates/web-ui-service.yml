@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kino-service
+  namespace: {{ .Release.Name }}
+  labels:
+    app: ui
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8081
+      protocol: TCP
+  selector:
+    app: ui

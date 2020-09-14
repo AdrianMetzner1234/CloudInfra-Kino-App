@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      type: aggregator
+      service: elastic-search
+  template:
+    metadata:
+      labels:
+        type: aggregator
+        service: elastic-search
+    spec:
+      containers:
+        - name: elastic-search
+          image: "elasticsearch:{{ .Values.elasticsearch.version }}"
+          env:
+            - name: "discovery.type"
+              value: "single-node"
+          ports:
+            - containerPort: 9200
+
