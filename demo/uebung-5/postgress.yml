@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: postgress
+  namespace: adrian
+spec:
+  containers:
+    - name: postgress
+      image: postgres:13
+      envFrom:
+        - secretRef:
+            name: postgress-secrets
+      ports:
+        - containerPort: 5432

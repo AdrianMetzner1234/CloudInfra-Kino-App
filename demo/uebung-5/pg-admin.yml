@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pg-admin
+  namespace: adrian
+spec:
+  containers:
+    - name: pg-admin
+      image: "dpage/pgadmin4:4.25"
+      envFrom:
+        - secretRef:
+            name: pg-admin-secrets
+      ports:
+        - containerPort: 80
