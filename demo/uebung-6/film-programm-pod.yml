@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: film-programm-pod
+  namespace: adrian
+spec:
+  containers:
+    - name: film-program
+      image: adrianmetzner/ci-kino-film-programm-service:1.1.0
+      ports:
+        - containerPort: 50000
+    - name: filebeat
+      image: store/elastic/filebeat:7.9.1
+      args:
+        - "-c"
+        - "/etc/filebeat.yml"
+        - "-e"
+      command:
+        - "setup"
+        - "-E"
+        - "setup.kibana.host=kibana.default:80"
+        - "-E"
+        - "output.elasticsearch.hosts=[\"elastic-search.default:80\"]"
+        - "-E"
+        - "output.elasticsearch.username=elastic"
+        - "-E"
+        - "output.elasticsearch.password=changeme"
+      volumeMounts:
+        - mountPath: ./filebeat.yml
+          name: filebeat-config
+
+  volumes:
+    - name: filebeat-config
+      configMap:
+        name: filebeat-config
