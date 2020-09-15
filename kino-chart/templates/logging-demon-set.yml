@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: file-beat-deamon-set
+  namespace: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      type: logging
+      service: filebeat
+  template:
+    metadata:
+      labels:
+        type: logging
+        service: filebeat
+    spec:
+      containers:
+        - name: filebeat
+          image: "store/elastic/filebeat:7.9.1"
+          command: ["setup",  "-E",  "setup.kibana.host={{ .Values.logging.kibana.dns }}:{{ .Values.logging.kibana.port }}", "-E", "output.elasticsearch.hosts=[\"{{.Values.logging.elsaticsearch.dns}}: {{.Values.logging.elsaticsearch.port}}\"]"]
+          volumeMounts:
+            - mountPath: /data
+              name: logging-folder
+      volumes:
+        - name: logging-folder
+          hostPath:
+            path: /var/log

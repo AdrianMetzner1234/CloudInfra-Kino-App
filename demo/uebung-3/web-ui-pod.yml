@@ -30,11 +30,11 @@ spec:
       operator: Exists
   containers:
     - name: film-program
-      image: adrianmetzner/ci-kino-ui:1.0.0
+      image: adrianmetzner/ci-kino-ui:1.1.0
       env:
-        - name: FILMPROGRAMM_SERVICE_HOSTNAME
+        - name: FILMPROGRAMM_HOSTNAME
           value: 10-0-2-178.adrian.pod.cluster.local:50000
-        - name: RESERVIERUNGS_SERVICE_HOSTNAME
+        - name: RESERVIERUNGSSERVICE_HOSTNAME
           value: 10-0-1-131.adrian.pod.cluster.local:45000
       livenessProbe:
         httpGet:

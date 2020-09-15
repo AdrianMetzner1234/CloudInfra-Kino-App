@@ -10,7 +10,7 @@ spec:
       ports:
         - containerPort: 45000
       env:
-        - name: FILMPROGRAMM_SERVICE_HOSTNAME
+        - name: FILMPROGRAMM_HOSTNAME
           value: 10.0.1.211:50000
       volumeMounts:
         - mountPath: /MicroReservierungsService/target/logs

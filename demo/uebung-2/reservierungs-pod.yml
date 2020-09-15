@@ -6,9 +6,9 @@ metadata:
 spec:
   containers:
     - name: film-program
-      image: adrianmetzner/ci-kino-reservierungs-service:1.0.0
+      image: adrianmetzner/ci-kino-reservierungs-service:1.1.0
       env:
-        - name: FILMPROGRAMM_SERVICE_HOSTNAME
+        - name: FILMPROGRAMM_HOSTNAME
           value: 10.0.2.178:50000
       livenessProbe:
         httpGet:

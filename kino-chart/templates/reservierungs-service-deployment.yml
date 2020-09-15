@@ -19,9 +19,9 @@ spec:
     spec:
       containers:
         - name: reservierungs-container
-          image: adrianmetzner/ci-kino-reservierungs-service:1.0.0
+          image: adrianmetzner/ci-kino-reservierungs-service:1.1.0
           env:
-            - name: FILMPROGRAMM_SERVICE_HOSTNAME
+            - name: FILMPROGRAMM_HOSTNAME
               valueFrom:
                 configMapKeyRef:
                   name: kino-config

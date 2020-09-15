@@ -19,14 +19,14 @@ spec:
     spec:
       containers:
         - name: ui-container
-          image: adrianmetzner/ci-kino-ui:1.0.0
+          image: adrianmetzner/ci-kino-ui:1.1.0
           env:
-            - name: FILMPROGRAMM_SERVICE_HOSTNAME
+            - name: FILMPROGRAMM_HOSTNAME
               valueFrom:
                 configMapKeyRef:
                   name: kino-config
                   key: film-program-service
-            - name: RESERVIERUNGS_SERVICE_HOSTNAME
+            - name: RESERVIERUNGSSERVICE_HOSTNAME
               valueFrom:
                 configMapKeyRef:
                   name: kino-config
