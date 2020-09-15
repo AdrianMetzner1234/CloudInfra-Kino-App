@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pg-admin-deployment
+  namespace: adrian
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: database
+      service: pg-admin
+  template:
+    metadata:
+      labels:
+        application: database
+        service: pg-admin
+    spec:
+      containers:
+        - name: pg-admin
+          image: "dpage/pgadmin4:4.25"
+          envFrom:
+            - secretRef:
+                name: pg-admin-secrets
+          ports:
+            - containerPort: 80

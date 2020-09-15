@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reservierungs-service-deployment
+  namespace: adrian
+  labels:
+    application: kino
+    service: reservierung
+spec:
+  selector:
+    matchLabels:
+      application: kino
+      service: reserierung
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        application: kino
+        service: reserierung
+    spec:
+      containers:
+        - name: reservierungs-service
+          image: adrianmetzner/ci-kino-reservierungs-service:1.1.0
+          ports:
+            - containerPort: 45000
+          env:
+            - name: FILMPROGRAMM_HOSTNAME
+              value: film-program-service.adrian
+          volumeMounts:
+            - mountPath: /MicroReservierungsService/target/logs
+              name: log-volume
+        - name: filebeat
+          image: store/elastic/filebeat:7.9.1
+          args:
+            - "-c"
+            - "/etc/filebeat.yml"
+            - "-e"
+          volumeMounts:
+            - mountPath: /etc/filebeat.yml
+              name: filebeat-config
+              readOnly: true
+              subPath: filebeat.yml
+            - mountPath: /usr/share/filebeat/logs
+              name: log-volume
+      volumes:
+        - name: filebeat-config
+          configMap:
+            name: filebeat-config
+            defaultMode: 0640
+        - name: log-volume
+          emptyDir: { }
+
