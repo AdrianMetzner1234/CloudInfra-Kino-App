@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: film-programm-pod
+  namespace: adrian
+spec:
+  containers:
+    - name: film-program
+      image: adrianmetzner/ci-kino-film-programm-service:1.0.0
+      livenessProbe:
+        httpGet:
+          port: 50000
+          path: /vorführungen
+      ports:
+        - containerPort: 50000
+
