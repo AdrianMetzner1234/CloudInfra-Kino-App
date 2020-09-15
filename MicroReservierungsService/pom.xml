@@ -4,6 +4,7 @@
 	<groupId>de.wps.devopstut</groupId>
 	<artifactId>MicroReservierungsService</artifactId>
 	<version>0.0.8-SNAPSHOT</version>
+  <packaging>jar</packaging>
 	<name>MicroReservierungsService</name>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -35,24 +36,35 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>com.jolira</groupId>
-				<artifactId>onejar-maven-plugin</artifactId>
-				<version>1.4.4</version>
-				<executions>
-					<execution>
-						<configuration>
-							<mainClass>de.wps.dot.reservierung.MicroReservierungsService</mainClass>
-							<attachToBuild>true</attachToBuild>
-							<classifier>onejar</classifier>
-							<filename>${project.build.finalName}-onejar.${project.packaging}</filename>
-						</configuration>
-						<goals>
-							<goal>one-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <includeScope>runtime</includeScope>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>de.wps.dot.reservierung.MicroReservierungsService</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
 			<plugin>
 				<groupId>org.liquibase</groupId>
 				<artifactId>liquibase-maven-plugin</artifactId>
