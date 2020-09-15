@@ -3,5 +3,5 @@ import de.wps.dot.reservierung.entität.Sitzplatzbelegung;
 import org.springframework.data.repository.CrudRepository;
 
 public interface SaalplanRepository extends CrudRepository<Sitzplatzbelegung, String> {
-    Sitzplatzbelegung findByVorführungsId(String vorführungsId);
+    Sitzplatzbelegung findByVorfuehrungsId(String vorfuehrungsId);
 }

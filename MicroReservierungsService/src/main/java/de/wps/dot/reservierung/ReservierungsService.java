@@ -42,7 +42,7 @@ public class ReservierungsService {
 	public Set<Sitznummer> getFreieSitze(String vorstellungsid) {
 		assert isVorstellungBekannt(vorstellungsid);
 
-		Sitzplatzbelegung sitzplatzbelegung = saalplanRepository.findByVorführungsId(vorstellungsid);
+		Sitzplatzbelegung sitzplatzbelegung = saalplanRepository.findByVorfuehrungsId(vorstellungsid);
 
 		return sitzplatzbelegung.getFreieSitze();
 	}
@@ -50,17 +50,17 @@ public class ReservierungsService {
 	public Sitzplatzbelegung getSitzplatzbelegung(String vorstellungsid) {
 		assert isVorstellungBekannt(vorstellungsid);
 
-		return saalplanRepository.findByVorführungsId(vorstellungsid);
+		return saalplanRepository.findByVorfuehrungsId(vorstellungsid);
 	}
 
 	public boolean isVorstellungBekannt(String vorstellungsid) {
-		return (saalplanRepository.findByVorführungsId(vorstellungsid) != null);
+		return (saalplanRepository.findByVorfuehrungsId(vorstellungsid) != null);
 	}
 
 	public Reservierung bucheSitze(String vorstellungsid, List<Sitznummer> requestedSeats) {
 		assert isVorstellungBekannt(vorstellungsid);
 
-		Sitzplatzbelegung sitzplatzbelegung = saalplanRepository.findByVorführungsId(vorstellungsid);
+		Sitzplatzbelegung sitzplatzbelegung = saalplanRepository.findByVorfuehrungsId(vorstellungsid);
 		if (sitzplatzbelegung.bucheSitze(requestedSeats)) {
 			int maximaleReservierungsnummer = reservierungsRepository.findeMaximaleReservierungsnummer();
 			Reservierung reservierung = Reservierung.erzeugeReservierung(vorstellungsid, requestedSeats, ++maximaleReservierungsnummer);
