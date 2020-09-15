@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgress-deployment
+  namespace: adrian
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: database
+      service: postgres
+  template:
+    metadata:
+      labels:
+        application: database
+        service: postgres
+    spec:
+      containers:
+        - name: postgress
+          image: postgres:13
+          envFrom:
+            - secretRef:
+                name: postgress-secrets
+          ports:
+            - containerPort: 5432
