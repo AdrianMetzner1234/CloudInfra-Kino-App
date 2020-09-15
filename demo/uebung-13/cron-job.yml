@@ -1,0 +1,18 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: collect-reservations
+  namespace: adrian
+spec:
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: get-reservations
+              image: busybox
+              command:
+                - "curl"
+                - "film-program-service.adrian/vorführungen"
+          restartPolicy: OnFailure
+  schedule:  "* * * * *"
