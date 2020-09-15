@@ -4,7 +4,7 @@ metadata:
   name: filebeat-config
   namespace: adrian
 data:
-  filebeat-config.yml: |-
+  filebeat.yml: |-
 
     logging:
       to_files: true
@@ -18,8 +18,7 @@ data:
           - ./logs/spring.log
 
     setup.kibana.host: "kibana.default:80"
-        - "output.elasticsearch.hosts=[\"elastic-search.default:80\"]"
-        - "-E"
-        - "output.elasticsearch.username=elastic"
-        - "-E"
-        - "output.elasticsearch.password=changeme"
+    output.elasticsearch:
+      hosts: ["elastic-search.default:80"]
+      username: "elastic"
+      password: "changeme"
