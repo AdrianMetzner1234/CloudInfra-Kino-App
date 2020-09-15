@@ -29,11 +29,11 @@ public class Reservierung {
 	@ElementCollection
 	@CollectionTable(name ="Sitznummern")
 	private List<Sitznummer> sitznummern;
-	private String vorführungkennung;
+	private String vorfuehrungkennung;
 	private int reservierungsnummer;
 
 	public Reservierung(String vorführungskennung, List<Sitznummer> sitznummern, int reservierungsnummer) {
-		this.vorführungkennung = vorführungskennung;
+		this.vorfuehrungkennung = vorführungskennung;
 		this.sitznummern = sitznummern;
 		this.reservierungsnummer = reservierungsnummer;
 	}
@@ -43,7 +43,7 @@ public class Reservierung {
 	}
 
 	public String getVorführungsnummer() {
-		return vorführungkennung;
+		return vorfuehrungkennung;
 	}
 
 	public int getReservierungsnummer() {

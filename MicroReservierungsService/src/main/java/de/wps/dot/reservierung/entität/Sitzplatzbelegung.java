@@ -18,15 +18,15 @@ import de.wps.dot.reservierung.Saal;
 public class Sitzplatzbelegung {
 	@Id
 	private String id;
-	private String vorführungsId;
+	private String vorfuehrungsId;
 	private String saalId;
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	private Map<Sitznummer, Boolean> sitzVerbucht;
 	
-	public Sitzplatzbelegung(String id, Saal saal, String vorführungsId) {
+	public Sitzplatzbelegung(String id, Saal saal, String vorfuehrungsId) {
 		this.id = id;
-		this.vorführungsId = vorführungsId;
+		this.vorfuehrungsId = vorfuehrungsId;
 		this.sitzVerbucht = new HashMap<>();
 		this.saalId = saal.getId();
 
@@ -41,12 +41,12 @@ public class Sitzplatzbelegung {
 		return saalId;
 	}
 
-	public String getVorführungsId() {
-		return vorführungsId;
+	public String getVorfuehrungsId() {
+		return vorfuehrungsId;
 	}
 
-	public void setVorführungsId(String vorführungsId) {
-		this.vorführungsId = vorführungsId;
+	public void setVorfuehrungsId(String vorführungsId) {
+		this.vorfuehrungsId = vorführungsId;
 	}
 
 	public boolean isSitzFrei(de.wps.dot.reservierung.Sitznummer sitznummer) {
