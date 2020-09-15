@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgress
+  name: postgres
   namespace: adrian
 spec:
   selector:
@@ -10,4 +10,4 @@ spec:
   type: ClusterIP
   ports:
     - port: 80
-      nodePort: 5432
+      targetPort: 5432
