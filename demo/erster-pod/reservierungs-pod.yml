@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: reservierungs-service-pod
+  namespace: adrian
+spec:
+  containers:
+    - name: film-program
+      image: adrianmetzner/ci-kino-reservierungs-service:1.0.0
+      env:
+        - name: FILMPROGRAMM_SERVICE_HOSTNAME
+          value: 10.0.2.178:50000
+      ports:
+        - containerPort: 45000
