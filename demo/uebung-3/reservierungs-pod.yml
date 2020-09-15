@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: reservierungs-service-pod
+  namespace: adrian
+  labels:
+    service: reservierungs-service
+spec:
+  affinity:
+    podAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchExpressions:
+                - key: service
+                  operator: In
+                  values:
+                    - film-programm-service
+                    - web-ui
+          weight: 100
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchLabels:
+              service: reservierungs-service
+  tolerations:
+    - key: slow
+      operator: Exists
+  containers:
+    - name: film-program
+      image: adrianmetzner/ci-kino-reservierungs-service:1.0.0
+      env:
+        - name: FILMPROGRAMM_SERVICE_HOSTNAME
+          value: 10.0.2.178:50000
+      livenessProbe:
+        httpGet:
+          port: 45000
+          path: /gesundheit/gesund
+      ports:
+        - containerPort: 45000
+      resources:
+        requests:
+          memory: 128M
+          cpu: "250m"
+        limits:
+          memory: 128M
+          cpu: "250m"

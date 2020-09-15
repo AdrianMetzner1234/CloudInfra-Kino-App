@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-ui-pod
+  namespace: adrian
+  labels:
+    service: web-ui
+spec:
+  affinity:
+    podAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchExpressions:
+                - key: service
+                  operator: In
+                  values:
+                    - reservierungs-service
+                    - film-programm-service
+          weight: 100
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchLabels:
+              service: web-ui
+  tolerations:
+    - key: slow
+      operator: Exists
+  containers:
+    - name: film-program
+      image: adrianmetzner/ci-kino-ui:1.0.0
+      env:
+        - name: FILMPROGRAMM_SERVICE_HOSTNAME
+          value: 10-0-2-178.adrian.pod.cluster.local:50000
+        - name: RESERVIERUNGS_SERVICE_HOSTNAME
+          value: 10-0-1-131.adrian.pod.cluster.local:45000
+      livenessProbe:
+        httpGet:
+          port: 8081
+      ports:
+        - containerPort: 8081
+      resources:
+        requests:
+          memory: 256M
+          cpu: "500m"
+        limits:
+          memory: 256M
+          cpu: "500m"
