@@ -20,7 +20,9 @@ spec:
     spec:
       containers:
         - name: reservierungs-service
-          image: adrianmetzner/ci-kino-reservierungs-service:1.2.0
+          image: adrianmetzner/ci-kino-reservierungs-service:1.2.6
+          args:
+            - "--spring.config.additional-location=/MicroReservierungsService/target/properties/application.properties"
           ports:
             - containerPort: 45000
           env:
@@ -39,7 +41,7 @@ spec:
           volumeMounts:
             - mountPath: /MicroReservierungsService/target/logs
               name: log-volume
-            - mountPath: /MicroReservierungsService/target/application.properties
+            - mountPath: /MicroReservierungsService/target/properties
               name: postgres-props
               readOnly: true
         - name: filebeat
