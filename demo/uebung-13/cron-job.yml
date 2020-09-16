@@ -10,7 +10,7 @@ spec:
         spec:
           containers:
             - name: get-reservations
-              image: busybox
+              image: curlimages/curl:7.72.0
               command:
                 - "curl"
                 - "film-program-service.adrian/vorführungen"
