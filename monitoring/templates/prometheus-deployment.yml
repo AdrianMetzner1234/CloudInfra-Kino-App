@@ -35,4 +35,5 @@ spec:
             name: {{ .Values.prometheus_configmap_name }}
         - name: prometheus-data
           emptyDir: {}
+      serviceAccountName: prometheus
 
