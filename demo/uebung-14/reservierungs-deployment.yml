@@ -20,33 +20,34 @@ spec:
     spec:
       containers:
         - name: reservierungs-service
-          image: adrianmetzner/ci-kino-reservierungs-service:1.1.0
+          image: adrianmetzner/ci-kino-reservierungs-service:1.2.6
           ports:
             - containerPort: 45000
           env:
             - name: FILMPROGRAMM_HOSTNAME
               value: film-program-service.adrian
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_USER
+                  name: postgress-secrets
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_PASSWORD
+                  name: postgress-secrets
           volumeMounts:
             - mountPath: /MicroReservierungsService/target/logs
               name: log-volume
-        - name: filebeat
-          image: store/elastic/filebeat:7.9.1
-          args:
-            - "-c"
-            - "/etc/filebeat.yml"
-            - "-e"
-          volumeMounts:
-            - mountPath: /etc/filebeat.yml
-              name: filebeat-config
+            - mountPath: /MicroReservierungsService/target/properties
+              name: postgres-props
               readOnly: true
-              subPath: filebeat.yml
-            - mountPath: /usr/share/filebeat/logs
-              name: log-volume
       volumes:
-        - name: filebeat-config
-          configMap:
-            name: filebeat-config
-            defaultMode: 0640
         - name: log-volume
-          emptyDir: { }
+          hostPath:
+            path: /var/logs
+        - name: postgres-props
+          configMap:
+            name: reservierungs-db-config
+            defaultMode: 0640
 

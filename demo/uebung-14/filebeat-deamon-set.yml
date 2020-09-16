@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: filebeat-deamons
+  namespace: adrian
+spec:
+  selector:
+    matchLabels:
+      application: logging
+      service: filebeat
+  template:
+    metadata:
+      labels:
+        application: logging
+        service: filebeat
+    spec:
+      containers:
+        - name: filebeat
+          image: store/elastic/filebeat:7.9.1
+          args:
+            - "-c"
+            - "/etc/filebeat.yml"
+            - "-e"
+          volumeMounts:
+            - mountPath: /etc/filebeat.yml
+              name: filebeat-config
+              readOnly: true
+              subPath: filebeat.yml
+            - mountPath: /usr/share/filebeat/logs
+              name: log-volume
+      volumes:
+        - name: log-volume
+          hostPath:
+            path: /var/logs
+        - name: filebeat-config
+          configMap:
+            name: filebeat-config
+            defaultMode: 0640

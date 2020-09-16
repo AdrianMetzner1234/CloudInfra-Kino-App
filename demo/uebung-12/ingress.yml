@@ -17,10 +17,3 @@ spec:
             backend:
               serviceName: "kino-ui"
               servicePort: 80
-    - host: pg-admin.adrian.sandbox.aws.wps.de
-      http:
-        paths:
-          - path: /*
-            backend:
-              serviceName: "pg-admin-ui"
-              servicePort: 80

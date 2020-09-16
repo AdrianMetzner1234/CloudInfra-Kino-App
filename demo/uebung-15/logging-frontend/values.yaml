@@ -1,0 +1,13 @@
+namespace: adrian
+
+elasticsearch:
+  version: 7.9.1
+  service:
+    name: elastic-search.default
+    port: 80
+
+kibana:
+  version: 7.9.1
+  service:
+    name: kibana
+    port: 80

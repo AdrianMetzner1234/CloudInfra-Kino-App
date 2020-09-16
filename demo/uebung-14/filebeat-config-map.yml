@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+  namespace: adrian
+data:
+  filebeat.yml: |-
+
+    logging:
+      to_files: true
+      files:
+        path: /var/log/filebeat
+        rotateeverybytes: 10485760 # = 10MB
+    filebeat.inputs:
+      - type: log
+        enabled: true
+        paths:
+          - ./logs/spring.log
+
+    setup.kibana.host: "kibana.default:80"
+    output.elasticsearch:
+      hosts: ["elastic-search.default:80"]
+      username: "elastic"
+      password: "changeme"

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: reservierungs-db-config
+  namespace: adrian
+data:
+  application.properties: |-
+    spring.datasource.url=jdbc:postgresql://postgres.adrian:80/postgres
+    spring.datasource.driverClassName=org.postgresql.Driver
+    spring.datasource.username=${DB_USERNAME}
+    spring.datasource.password=${DB_PASSWORD}
+    spring.datasource.platform=postgres
+    spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+    logging.level=TRACE

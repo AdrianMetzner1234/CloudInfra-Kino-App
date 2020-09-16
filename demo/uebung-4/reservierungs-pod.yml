@@ -13,7 +13,7 @@ spec:
       ports:
         - containerPort: 45000
       volumeMounts:
-        - mountPath: reservierungs-db
+        - mountPath: /MicroReservierungsService/target/reservierungs-db
           name: h2-store
   volumes:
     - name: h2-store
