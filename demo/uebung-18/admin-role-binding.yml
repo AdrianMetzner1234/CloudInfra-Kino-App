@@ -9,6 +9,6 @@ subjects:
   - kind: User
     name: Johannes
 roleRef:
-  apiGroup: "*"
+  apiGroup: "rbac.authorization.k8s.io"
   kind: Role
   name: admins-can-see-everything

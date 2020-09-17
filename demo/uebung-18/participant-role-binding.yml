@@ -7,6 +7,6 @@ subjects:
   - kind: Group
     name: participants
 roleRef:
-  apiGroup: "*"
+  apiGroup: "rbac.authorization.k8s.io"
   kind: Role
   name: participants-can-see-services
