@@ -16,3 +16,4 @@ spec:
           path: /gesundheit/gesund
       ports:
         - containerPort: 45000
+  restartPolicy: N

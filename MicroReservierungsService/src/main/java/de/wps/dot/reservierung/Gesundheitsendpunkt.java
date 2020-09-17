@@ -16,7 +16,7 @@ public class Gesundheitsendpunkt {
 
     @GetMapping("/gesund")
     public ResponseEntity GesundheitsEndpunkt() {
-       return new ResponseEntity(HttpStatus.OK);
+       return new ResponseEntity(HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     @GetMapping("/gesund-aber-langsam")

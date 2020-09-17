@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: particpant-see-service-role-binding
+  namespace: adrian
+subjects:
+  - kind: Group
+    name: participants
+roleRef:
+  apiGroup: ""
+  kind: Role
+  name: participants-can-see-services

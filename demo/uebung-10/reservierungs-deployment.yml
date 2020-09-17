@@ -10,13 +10,13 @@ spec:
   selector:
     matchLabels:
       application: kino
-      service: reserierung
+      service: reservierung
   replicas: 3
   template:
     metadata:
       labels:
         application: kino
-        service: reserierung
+        service: reservierung
     spec:
       containers:
         - name: reservierungs-service

@@ -8,7 +8,12 @@ spec:
     - name: film-program
       image: adrianmetzner/ci-kino-reservierungs-service:1.1.0
       env:
-        - name: FILMPROGRAMM_HOSTNAME
+        []- name: FILMPROGRAMM_HOSTNAME
           value: 10.0.2.178:50000
       ports:
         - containerPort: 45000
+
+          10:
+            0:
+              3:
+                49:

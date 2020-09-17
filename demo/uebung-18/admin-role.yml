@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: admins-can-see-everything
+  namespace: adrian
+rules:
+  - verbs:
+      - "list"
+      - "get"
+      - "watch"
+    resources:
+      - "*"
+    apiGroups:
+      - ""

@@ -7,12 +7,12 @@ COPY MicroReservierungsServiceClient MicroReservierungsServiceClient
 RUN mvn -f MicroReservierungsServiceClient/pom.xml install
 
 # eigene Dependencies laden
-COPY MicroReservierungsService/pom.xml MicroReservierungsService/
-RUN mvn -f MicroReservierungsService/pom.xml dependency:go-offline  -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+COPY MicroReservierungsService MicroReservierungsService/
+RUN mvn -f MicroReservierungsService/pom.xml dependency:go-offline
 
 # bauen
 COPY MicroReservierungsService/src MicroReservierungsService/src
-RUN mvn -f MicroReservierungsService/pom.xml package  -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+RUN mvn -f MicroReservierungsService/pom.xml package
 
 # Start konfigurieren
 EXPOSE 45000

@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: participants-can-see-services
+  namespace: adrian
+rules:
+  - verbs:
+      - "list"
+      - "get"
+      - "watch"
+    resources:
+      - "services"
+    apiGroups:
+      - ""

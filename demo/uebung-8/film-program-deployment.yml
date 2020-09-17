@@ -7,10 +7,13 @@ metadata:
     application: kino
     service: film-program
 spec:
+  strategy:
+    type: Roll
   selector:
     matchLabels:
       application: kino
       service: film-program
+
   replicas: 3
   template:
     metadata:
