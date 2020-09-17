@@ -7,6 +7,6 @@ subjects:
   - kind: Group
     name: participants
 roleRef:
-  apiGroup: ""
+  apiGroup: "*"
   kind: Role
   name: participants-can-see-services

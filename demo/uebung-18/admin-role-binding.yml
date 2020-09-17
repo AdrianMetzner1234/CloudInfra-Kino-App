@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: particpant-see-service-role-binding
+  name: admins-see-everything-role-binding
   namespace: adrian
 subjects:
   - kind: User
@@ -9,6 +9,6 @@ subjects:
   - kind: User
     name: Johannes
 roleRef:
-  apiGroup: ""
+  apiGroup: "*"
   kind: Role
   name: admins-can-see-everything
