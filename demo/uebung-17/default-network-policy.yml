@@ -1,10 +1,11 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: Default-Deny-All
+  name: default-deny-all
   namespace: adrian
 spec:
-  podSelector: {}
+  podSelector:
+    matchLabels: {}
   ingress:
     - from:
         - namespaceSelector:
