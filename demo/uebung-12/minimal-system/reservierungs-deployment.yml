@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reservierungs-service-deployment
+  namespace: adrian
+  labels:
+    application: kino
+    service: reservierung
+spec:
+  selector:
+    matchLabels:
+      application: kino
+      service: reservierung
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        application: kino
+        service: reservierung
+    spec:
+      containers:
+        - name: reservierungs-service
+          image: adrianmetzner/ci-kino-reservierungs-service:1.1.0
+          ports:
+            - containerPort: 45000
+          env:
+            - name: FILMPROGRAMM_HOSTNAME
+              value: film-program-service.adrian

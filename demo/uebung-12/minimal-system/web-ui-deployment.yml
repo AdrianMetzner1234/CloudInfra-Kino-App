@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-ui-deployment
+  namespace: adrian
+spec:
+  selector:
+    matchLabels:
+      application: kino
+      service: ui
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        application: kino
+        service: ui
+    spec:
+      containers:
+        - name: film-program
+          image: adrianmetzner/ci-kino-ui:1.1.0
+          env:
+            - name: FILMPROGRAMM_HOSTNAME
+              value: film-program-service.adrian
+            - name: RESERVIERUNGSSERVICE_HOSTNAME
+              value: reservierungs-service.adrian
+          ports:
+            - containerPort: 8081
+

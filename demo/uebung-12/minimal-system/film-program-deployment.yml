@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: film-program-deployment
+  namespace: adrian
+  labels:
+    application: kino
+    service: film-program
+spec:
+  selector:
+    matchLabels:
+      application: kino
+      service: film-program
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        application: kino
+        service: film-program
+    spec:
+      containers:
+        - name: film-program-service
+          image: adrianmetzner/ci-kino-film-programm-service:1.2.0
+          ports:
+            - containerPort: 50000
